@@ -76,7 +76,7 @@ public class MoveCharacter : MonoBehaviour
     }    
     private void OnCollisionStay2D(Collision2D collision)
     {
-        Debug.Log("Collision");
+       
         Stop();
         transform.position += Bounce(cosines, speed);
     }
