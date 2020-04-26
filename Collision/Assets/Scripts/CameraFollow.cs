@@ -8,6 +8,8 @@ public class CameraFollow : MonoBehaviour
     private bool Is2D { get; set; }
     private static int CameraZPosition = -1;
 
+
+
     private float speed;
 
     private Vector3 moveVector;
@@ -46,7 +48,7 @@ public class CameraFollow : MonoBehaviour
             z = Player.transform.position.z;
         }
         transform.position = new Vector3(x, y, z);
-
+        
 
     }
 
@@ -55,12 +57,22 @@ public class CameraFollow : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        moveVector = GetMoveVector(this.transform.position, Player.transform.position);
-        cosines = GetDirectCosines(moveVector);
+
+        #region Smoothly camera follow
+
+       /* moveVector = GetMoveVector(this.transform.position, Player.transform.position);
+        cosines = Move.GetDirectCosines(moveVector);
         speed= GetSpeed(moveVector);
         addictedMove = GetAddicted(cosines, speed);
+        transform.position += addictedMove;*/
 
-        transform.position += addictedMove;
+        #endregion
+
+        
+        if (Input.GetKey(KeyCode.Q) || GameObject.Find("character").GetComponent<AstarMoveCharacter>().IsMove )
+        {
+            this.Start();
+        }
     }
 
 
@@ -69,35 +81,10 @@ public class CameraFollow : MonoBehaviour
         return toCoord - coord;
     }
 
-    private float[] GetDirectCosines(Vector3 vector)
-    {
-        float[] Cosines = new float[3];
-        float length = vector.magnitude;
 
-        Cosines[(int)DirCos.X] = vector.x / length;
-        Cosines[(int)DirCos.Y] = vector.y / length;
-        Cosines[(int)DirCos.Z] = vector.z / length;
-        return Cosines;
-
-    }
     private float GetSpeed(Vector3 vector)
     {
         return CameraAcceleration * vector.magnitude;
     }
-    private Vector3 GetAddicted(float[] cosines, float speed)
-    {
-        float coeff = speed * Time.deltaTime;
-        if (Is2D)
-        {
-              return new Vector3(cosines[(int)DirCos.X] * coeff,
-                               cosines[(int)DirCos.Y] * coeff, 0); //z=0 
-        }
-        else
-        {
 
-            return new Vector3(cosines[(int)DirCos.X] * coeff,
-                               cosines[(int)DirCos.Y] * coeff,
-                               cosines[(int)DirCos.Z] * coeff);
-        }
-    }
 }

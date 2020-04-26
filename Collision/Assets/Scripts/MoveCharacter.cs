@@ -1,8 +1,7 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
-using System;
-using System.Threading;
+using UnityEngine.UI;
+
 enum DirCos
 {
     X,
@@ -12,34 +11,54 @@ enum DirCos
 
 public class MoveCharacter : MonoBehaviour
 {
+
+    public Text speedText;
+    private Vector3 downPosition;
     private float bounce;
     private bool Is2D;
     private float speed;
-    private Vector3 toMove;
+    private Vector3 upPosition;
     private Vector3 moveVector;
     private float[] cosines;
-    private bool isMove;
-    private float epsilon;
-    private Ray ray;
+    public bool isMove;
+    private float epsilonToStart;
+    private float epsilonToStay;
     // Start is called before the first frame update
     void Start()
     {
-        bounce = 0.004f;
+        speedText.text = "Текущая скорость: ";
+        bounce = 0.04f;
         Is2D = true;
         isMove = false;
-        epsilon = 0.1f;
+        epsilonToStay = 0.1f;
+        epsilonToStart = 1f;
         speed = 10f;
     }
-
+  
+    private void PrintSpeed()
+    {
+        speedText.text = String.Format("Текущая скорость: {0}", speed);
+    }
     // Update is called once per frame
     void Update()
     {
 
-      
+        if (Physics2D.OverlapCircle(new Vector2(this.transform.position.x, this.transform.position.y), 0.1f, LayerMask.GetMask("Wall")))
+        {
+            Debug.Log("Warning!!!");
+        }
+      //  this.CheckSpeedChange();
+        this.PrintSpeed();
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            downPosition = Camera.main.ScreenPointToRay(Input.mousePosition).origin;
+        }
+
         if (isMove)
         {
             Vector3 goMove = GoMove(cosines, speed);
-            if (!ApproximatelyEquals(transform.position, toMove, epsilon))
+            if (!ApproximatelyEquals(transform.position, upPosition, epsilonToStay))
             {
                 transform.position += goMove;
             }
@@ -51,19 +70,22 @@ public class MoveCharacter : MonoBehaviour
         else
         {
 
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonUp(0))
             {
-                ChangeLock(ref isMove);
-                ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-                toMove = ray.origin;
-                if (Is2D)
+                upPosition = Camera.main.ScreenPointToRay(Input.mousePosition).origin;
+                if (ApproximatelyEquals(downPosition, upPosition, epsilonToStart))
                 {
-                    toMove.z = default;
-                }
-                moveVector = toMove - transform.position;
-                cosines = GetDirectingCosines(moveVector);
+                    ChangeLock(ref isMove);
 
+
+
+                    if (Is2D)
+                    {
+                        upPosition.z = default;
+                    }
+                    moveVector = upPosition - transform.position;
+                    cosines = Move.GetDirectCosines(moveVector);
+                }
 
             }
         }
@@ -73,14 +95,15 @@ public class MoveCharacter : MonoBehaviour
     private void Stop()
     {
         isMove = false;
-    }    
+
+    }
     private void OnCollisionStay2D(Collision2D collision)
     {
-       
+
         Stop();
         transform.position += Bounce(cosines, speed);
     }
-   
+
     private void ChangeLock(ref bool flag)
     {
         flag = !flag;
@@ -101,18 +124,7 @@ public class MoveCharacter : MonoBehaviour
             return false;
         }
     }
-    private float[] GetDirectingCosines(Vector3 vector)
-    {
-
-        float[] cosines = new float[3];
-        float length = vector.magnitude;
-        cosines[(int)DirCos.X] = (vector.x) / length;
-        cosines[(int)DirCos.Y] = (vector.y) / length;
-        cosines[(int)DirCos.Z] = (vector.z) / length;
-
-
-        return cosines;
-    }
+   
     private Vector3 GoMove(float[] cosines, float speed)
     {
         Vector3 vector = new Vector3();
