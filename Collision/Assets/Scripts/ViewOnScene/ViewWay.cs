@@ -11,6 +11,8 @@ public class ViewWay : MonoBehaviour
     private static float Detalisation { get; set; } = 1f;
     private static float period = 0.00002f;
 
+    private static readonly bool diagonalAdjacent = true;
+
     private float timer = 0;
     // Start is called before the first frame update
     void Start()
@@ -25,7 +27,7 @@ public class ViewWay : MonoBehaviour
 
         if (MyTimer.Wait(period, ref timer) && Input.GetMouseButton(1))
         {
-            Way = PathFinderAstar.GetPath(out CheckedCells, new Cell(Player.transform.position, Detalisation), new Cell(Camera.main.ScreenPointToRay(Input.mousePosition).origin, Detalisation), Detalisation, Player.transform.localScale.x, true);
+            Way = PathFinderAstar.GetPath(out CheckedCells, Player.transform.position,Camera.main.ScreenPointToRay(Input.mousePosition).origin, Detalisation, Player.transform.localScale.x, diagonalAdjacent);
            // Debug.Log("Прошло " + period + " сек.");
         }
 

@@ -21,16 +21,15 @@ public static class PathFinderAstar
     private static bool DiagonalAdjacent { get; set; }
 
 
-    private static WayCell GetAvailableTarget(Cell preferTarget)
+    private static WayCell GetAvailableTarget(Vector3 preferTarget)
     {
 
-        if (Physics2D.OverlapCircle(new Vector2(preferTarget.X, preferTarget.Y), CharacterRadius))
+        if (Physics2D.OverlapCircle(preferTarget, CharacterRadius))
         {
             return null;
         }
 
-
-        return new WayCell(preferTarget, null, new Vector2(preferTarget.X, preferTarget.Y), Detalisation, float.MaxValue);
+        return new WayCell(new Cell(preferTarget, Detalisation), null, preferTarget, float.MaxValue);
     }
     private static float GetMaxDeviation(float detalisation, float findPower)
     { 
@@ -38,9 +37,8 @@ public static class PathFinderAstar
 
     }
 
-    private static Stack<WayCell> GetWay(Cell startCell, Cell finishCell, float detalisation, float characterRadius, bool diagonalAdjacent = false)
-    {
-
+    private static Stack<WayCell> GetWay(Vector3 startPos, Vector3 finishPos, float detalisation, float characterRadius, bool diagonalAdjacent = false)
+    { 
         Detalisation = detalisation;
         MaxDeviation=GetMaxDeviation(Detalisation,FindPower);
         DiagonalAdjacent = diagonalAdjacent;
@@ -48,8 +46,9 @@ public static class PathFinderAstar
         Checked = new List<WayCell>();
         Stack<WayCell> way = new Stack<WayCell>();
         CharacterRadius = characterRadius;
-        Start = new WayCell(finishCell, null, startCell.X, startCell.Y, Detalisation, 0f);
-        Finish = GetAvailableTarget(finishCell);
+        
+        Finish = GetAvailableTarget(finishPos);
+        Start = new WayCell(Finish, null, startPos, 0f);
         // Finish = new WayCell(finishCell, null, finishCell.X, finishCell.Y, Detalisation,float.MaxValue);
         if (Finish == null)
         {
@@ -120,15 +119,15 @@ public static class PathFinderAstar
         return way;
     }
 
-    public static Stack<WayCell> GetPath(Cell startCell, Cell finishCell, float detalisation, float characterRadius, bool diagonalAdjacent = false)
+    public static Stack<WayCell> GetPath(Vector3 startPos, Vector3 finishPos, float detalisation, float characterRadius, bool diagonalAdjacent = false)
     {
-
-        var result = GetWay(startCell, finishCell, detalisation, characterRadius, diagonalAdjacent);
-        return result;
+       
+        
+        return GetWay(startPos, finishPos, detalisation, characterRadius, diagonalAdjacent); 
     }
-    public static Stack<WayCell> GetPath(out List<WayCell> checkedCellsContainer, Cell startCell, Cell finishCell, float detalisation, float characterRadius, bool diagonalAdjacent = false)
+    public static Stack<WayCell> GetPath(out List<WayCell> checkedCellsContainer, Vector3 startPos, Vector3 finishPos, float detalisation, float characterRadius, bool diagonalAdjacent = false)
     {
-        var result = GetWay(startCell, finishCell, detalisation, characterRadius, diagonalAdjacent);
+        var result = GetWay(startPos, finishPos, detalisation, characterRadius, diagonalAdjacent);
 
         checkedCellsContainer = Checked;
 

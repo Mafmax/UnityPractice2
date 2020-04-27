@@ -1,28 +1,35 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class AstarMove : MonoBehaviour
 {
 
-    public GameObject Character;
 
+
+    public GameObject Character;
+    public Text TextBox_Speed;
+    public bool IsMove  = false;
+
+
+    private static readonly float downToUp_epsilon = 1f;
+    private static readonly float detalisation = 1f;
+    private static readonly bool diagonalAdjacent = true;
+    private static readonly bool Is2D  = true;
+
+    private float speed = 5f;
 
     private Vector3 TargetPosition=new Vector3();
-    private Vector3 downPosition = new Vector3();
-    private Vector3 upPosition = new Vector3();
-
-
-
+    private Vector3 DownClickMousePosition = new Vector3();
+    private Vector3 UpClickMousePosition = new Vector3();
     private Stack<WayCell> Way = new Stack<WayCell>();
-    private static readonly float nearCharacter_epsilon = 1f;
-    private static readonly float downToUp_epsilon = 1f;
+
+   
 
 
-    private List<bool> Conditions { get; set; } = new List<bool>();
-    private static readonly float detalisation = 1f;
-    private float ToStay_epsilon;
+    private List<bool> conditions = new List<bool>();
+    
+
     private bool correctMouseDown = false;
     private bool CorrectMouseDown
     {
@@ -47,9 +54,8 @@ public class AstarMove : MonoBehaviour
             correctMouseUp = value;
         }
     }
-    public bool IsMove { get; set; }
-    private bool Is2D { get; set; }
-    private float speed;
+
+
     private float Speed
     {
         get
@@ -62,31 +68,18 @@ public class AstarMove : MonoBehaviour
         }
     }
     private float FinalSpeed { get; set; }
-    private float[] Cosines { get; set; }
-    private Vector3 DeltaMove { get; set; } = default;
-    private Vector3 MoveVector { get; set; }
+    private Vector3 DeltaMove = default;
 
-    public static float Detalisation => detalisation;
+
 
 
     // Start is called before the first frame update
     void Start()
     {
-
-        downPosition = new Vector3();
-        Way = new Stack<WayCell>();
-        IsMove = false;
-        Is2D = true;
-        Speed = 5f;
-        ToStay_epsilon = Time.deltaTime * Speed;
-        GetFinalSpeed(Speed);
-        MoveVector = new Vector3(0, 0);
-        
-        
-
+       FinalSpeed= GetFinalSpeed(Speed);
     }
 
-    // Update is called once per frame
+    
     void Update()
     {
 
@@ -96,46 +89,39 @@ public class AstarMove : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0))
         {
-            CorrectMouseDown=Mouse.CheckCorrectButton(ref downPosition, Character.transform.position, nearCharacter_epsilon, false);
+            CorrectMouseDown=Mouse.CheckCorrectButton(ref DownClickMousePosition, Character.transform.position, Character.transform.localScale.magnitude, false);
             Debug.Log(CorrectMouseDown);
         }
         if (Input.GetMouseButtonUp(0))
         {
-            CorrectMouseUp=Mouse.CheckCorrectButton(ref upPosition, downPosition, downToUp_epsilon, true);
+            CorrectMouseUp=Mouse.CheckCorrectButton(ref UpClickMousePosition, DownClickMousePosition, downToUp_epsilon, true);
             Debug.Log(CorrectMouseUp);
         }
-        if (Conditions.Count > 0)
+        if (conditions.Count > 0)
         {
-            Conditions.Clear();
+            conditions.Clear();
         }
-        Conditions.Add(!IsMove);
-        Conditions.Add(CorrectMouseDown);
-        Conditions.Add(CorrectMouseUp);
+        conditions.Add(!IsMove);
+        conditions.Add(CorrectMouseDown);
+        conditions.Add(CorrectMouseUp);
         
-        if (Check.Conjunction(Conditions))
+        if (Check.Conjunction(conditions))
         {
-            Debug.Log("Погнали искать путь");
-
-            Way = PathFinderAstar.GetPath(new Cell(Character.transform.position,Detalisation), new Cell(upPosition,Detalisation), Detalisation, Character.transform.localScale.magnitude, true);
-
-            TargetPosition = this.transform.position;
-
+            Way = PathFinderAstar.GetPath(Character.transform.position, UpClickMousePosition, detalisation, Character.transform.localScale.magnitude, diagonalAdjacent);
+            TargetPosition = Character.transform.position;
             IsMove = true;
-
             Mouse.ResetCorrect(out correctMouseUp,out correctMouseDown);
         }
-
-        //Debug.Log("TargetPosition: " + TargetPosition);
         if (IsMove)
         {
-            if (Move.ApproximatelyEquals(this.transform.position, TargetPosition, ToStay_epsilon))
+            if (Move.ApproximatelyEquals(Character.transform.position, TargetPosition, Time.deltaTime * Speed))
             {
-                this.transform.position = TargetPosition;
+                Character.transform.position = TargetPosition;
                 if (Way.Count > 0)
                 {
-
-                    TargetPosition = GetTarget(Way);
-                    Debug.Log("Берем следующую цель: " + TargetPosition);
+                    TargetPosition = Move.GetTarget(Character, Way);
+                    DeltaMove = Move.GetAddicted(Character.transform.position, TargetPosition, FinalSpeed, Is2D);
+                    
                 }
                 else
                 {
@@ -147,7 +133,7 @@ public class AstarMove : MonoBehaviour
             }
             else
             {
-                transform.position += DeltaMove;
+                Character.transform.position += DeltaMove;
             }
 
         }
@@ -159,47 +145,30 @@ public class AstarMove : MonoBehaviour
 
     
 
+   
+
+
+
+    private float GetFinalSpeed(float customSpeed)
+    {
+        float sameCoeff = 0.1f;
+        return  sameCoeff * detalisation * customSpeed;
+    }
+
     public void OnDrawGizmos()
     {
-        
+
         if (Way.Count > 0)
         {
             Gizmos.color = Color.red;
-            Debug.Log("DRAWWWWWWWWW");
             foreach (var item in Way)
             {
-                Gizmos.DrawSphere(new Vector3(item.X, item.Y, -1), Detalisation / 4f);
+                Gizmos.DrawSphere(new Vector3(item.X, item.Y, -1), detalisation / 4f);
             }
             Gizmos.color = Color.blue;
             Gizmos.DrawSphere(TargetPosition, Character.transform.localScale.magnitude / 4f);
         }
 
-    }
-
-    private Vector3 GetTarget(Stack<WayCell> cells)
-    {
-        WayCell wayCell;
-        if (cells.Count > 0)
-        {
-
-            wayCell = cells.Pop();
-
-            MoveVector = wayCell.GetMoveVector();
-            Cosines = Move.GetDirectCosines(MoveVector);
-            DeltaMove = Move.GetAddicted(Cosines, FinalSpeed, Is2D);
-            // Debug.Log("Значение: "+ MoveVector);
-            return this.transform.position + MoveVector;
-        }
-        else
-        {
-            return this.transform.position;
-        }
-    }
-
-
-    private void GetFinalSpeed(float customSpeed)
-    {
-        FinalSpeed = 0.1f * Detalisation * customSpeed;
     }
 
 }

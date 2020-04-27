@@ -7,7 +7,7 @@ using System.Linq;
 public class Cell
 {
 
-    protected float Detalisation { get; set; }
+    public float Detalisation { get; set; }
     public float X { get; set; }
     public float Y { get; set; }
 

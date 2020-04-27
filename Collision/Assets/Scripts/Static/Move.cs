@@ -64,6 +64,10 @@ public static class Move
                                cosines[(int)DirCos.Z] * coeff);
         }
     }
+    public static Vector3 GetAddicted(Vector3 startPosition, Vector3 endPosition,float speed, bool Is2D=true)
+    {
+        return GetAddicted(GetDirectCosines(GetVector(startPosition, endPosition)), speed, Is2D);
+    }
 
 
 
@@ -79,4 +83,23 @@ public static class Move
 
     }
 
+    public static Vector3 GetVector(Vector3 startPoint, Vector3 endPoint)
+    {
+        return endPoint - startPoint;
+    }
+
+
+    public static Vector3 GetTarget(GameObject character, Stack<WayCell> cells)
+    {
+        if (cells.Count > 0)
+        {
+
+
+            return character.transform.position + cells.Pop().GetMoveVector();
+        }
+        else
+        {
+            return character.transform.position;
+        }
+    }
 }

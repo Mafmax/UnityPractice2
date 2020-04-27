@@ -11,20 +11,25 @@ public class WayCell : Cell
     public Cell FinishCell { get; set; }
     public float Weight { get; set; }
 
-    public WayCell(Cell finish, WayCell preview, float x, float y, float detalisation, float toStartDistance)
-        : base(x, y, detalisation)
+    public WayCell(Cell finish, WayCell preview, float x, float y, float toStartDistance)
+        : base(x, y, finish.Detalisation)
     {
         FinishCell = finish;
 
         PreviewCell = preview;
         InitializeWeight(toStartDistance);
     }
-    public WayCell(Cell finish, WayCell preview, Vector2 coord, float detalisation, float toStartDistance)
-        : this(finish, preview, coord.x, coord.y, detalisation, toStartDistance)
+    public WayCell(Cell finish, WayCell preview, Vector2 coord,  float toStartDistance)
+        : this(finish, preview, coord.x, coord.y, toStartDistance)
     {
     }
-    public WayCell(Cell finish, WayCell preview, Vector3 coord, float detalisation, float toStartDistance)
-        : this(finish, preview, coord.x, coord.y, detalisation, toStartDistance)
+    public WayCell(Cell finish, WayCell preview, Vector3 coord, float toStartDistance)
+        : this(finish, preview, coord.x, coord.y, toStartDistance)
+    {
+
+    }
+    public WayCell(Cell finish, WayCell preview, Cell currentCell, float toStartDistance)
+       : this(finish, preview, currentCell.X, currentCell.Y, toStartDistance)
     {
 
     }
@@ -73,13 +78,13 @@ public class WayCell : Cell
                       //  Debug.Log("Созидание соседа-диагонали.");
                         float newToStartDistance = ToStartDistance + Detalisation * (float)Math.Sqrt(2);
 
-                        adjacent.Add(new WayCell(FinishCell, this, endX, endY, Detalisation, newToStartDistance));
+                        adjacent.Add(new WayCell(FinishCell, this, endX, endY, newToStartDistance));
                     }
                     else
                     {
                         //Debug.Log("Созидание соседа-оргогонали.");
                         float newToStartDistance = ToStartDistance + Detalisation;
-                        adjacent.Add(new WayCell(FinishCell, this, endX, endY, Detalisation, newToStartDistance));
+                        adjacent.Add(new WayCell(FinishCell, this, endX, endY, newToStartDistance));
                     }
 
                 }
