@@ -12,7 +12,7 @@ public class ViewWay : MonoBehaviour
     private static float period = 0.00002f;
 
     private static readonly bool diagonalAdjacent = true;
-
+    private Vector3 GizmosDrawClick=new Vector3(0f,0f,0f);
     private float timer = 0;
     // Start is called before the first frame update
     void Start()
@@ -27,6 +27,7 @@ public class ViewWay : MonoBehaviour
 
         if (MyTimer.Wait(period, ref timer) && Input.GetMouseButton(1))
         {
+            GizmosDrawClick = Camera.main.ScreenPointToRay(Input.mousePosition).origin;
             Way = PathFinderAstar.GetPath(out CheckedCells, Player.transform.position,Camera.main.ScreenPointToRay(Input.mousePosition).origin, Detalisation, Player.transform.localScale.x, diagonalAdjacent);
            // Debug.Log("Прошло " + period + " сек.");
         }
@@ -47,6 +48,8 @@ public class ViewWay : MonoBehaviour
         {
             Gizmos.DrawSphere(new Vector3(cell.X, cell.Y, -1), Detalisation / 2f);
         }
+        Gizmos.color = Color.blue;
+        Gizmos.DrawSphere(GizmosDrawClick, Detalisation / 2f);
 
     }
 }

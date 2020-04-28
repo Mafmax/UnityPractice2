@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class WayCell : Cell
@@ -43,9 +44,9 @@ public class WayCell : Cell
     }
 
 
-    public List<WayCell> GetAdjacent(bool diagonalAdjacent)
+    public void AddNewAdjacents(ref List<WayCell> waiting, bool diagonalAdjacent)
     {
-        var adjacent = new List<WayCell>();
+       
 
         int s = 0;
         float endY = default;
@@ -73,25 +74,53 @@ public class WayCell : Cell
                         case 2: endX = this.X + this.Detalisation; break;
                     }
 
+                    var justWaiting = waiting.Where(x => x.X == endX).Where(y => y.Y == endY).ToList();
+                    Debug.Log("Количество kustWaiting: " + justWaiting.Count);
+
                     if (s % 2 == 0 && diagonalAdjacent)
                     {
                       //  Debug.Log("Созидание соседа-диагонали.");
                         float newToStartDistance = ToStartDistance + Detalisation * (float)Math.Sqrt(2);
 
-                        adjacent.Add(new WayCell(FinishCell, this, endX, endY, newToStartDistance));
+
+                        foreach(var waitCell in justWaiting)
+                        {
+                                if(waitCell.ToStartDistance <= newToStartDistance)
+                                {
+                                    break;
+                                }
+                              
+                                    
+                                
+
+                        }
+                        waiting.Add(new WayCell(FinishCell, this, endX, endY, newToStartDistance));
+
                     }
                     else
                     {
                         //Debug.Log("Созидание соседа-оргогонали.");
                         float newToStartDistance = ToStartDistance + Detalisation;
-                        adjacent.Add(new WayCell(FinishCell, this, endX, endY, newToStartDistance));
+                        foreach (var waitCell in justWaiting)
+                        {
+
+                            if (waitCell.ToStartDistance <= newToStartDistance)
+                            {
+                                break;
+                            }
+                         
+                               
+                            
+
+                        }
+                        waiting.Add(new WayCell(FinishCell, this, endX, endY, newToStartDistance));
                     }
 
                 }
                 s++;
             }
         }
-        return adjacent;
+
     }
     public static float GetDetourDistanсe(Cell start, Cell target)
     {

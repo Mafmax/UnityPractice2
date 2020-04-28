@@ -13,6 +13,12 @@ public class Cell
 
     public Cell(float x, float y, float detalisation)
     {
+        if (false)
+        {
+            Debug.LogWarning("Конструктор Cell(x,y,detalisation)");
+            Debug.LogWarning("X: " + x);
+            Debug.LogWarning("Y: " + y);
+        }
         Detalisation = detalisation;
 
         X = GetDetalisation(x, detalisation);
