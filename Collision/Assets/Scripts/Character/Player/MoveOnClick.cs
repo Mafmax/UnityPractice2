@@ -1,29 +1,36 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class MoveOnClick : MonoBehaviour
 {
+    public Canvas canvas;
     private AstarMoveClickController Driver;
     private float speed = 50f;
-    public Text textBoard;
+    private Text speedText;
     private float GizmosRadius;
+    private Text[] texts;
 
     // Start is called before the first frame update
     void Start()
     {
         GizmosRadius =this.gameObject.transform.localScale.magnitude / 4f;
-        Driver = new AstarMoveClickController(this.gameObject, speed, textBoard);
+        Driver = new AstarMoveClickController(this.gameObject, speed, FindObjectOfType<Canvas>());
+        Debug.Log(Driver.IsEnable);
         Driver.Enable();
-        
+        Debug.Log(Driver.IsEnable);
 
+        texts = canvas.GetComponentsInChildren<Text>();
     }
 
     // Update is called once per frame
     void Update()
     {
+       
         Driver.Go();
+        
     }
 
     public void OnDrawGizmos()

@@ -2,13 +2,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AstarMoveClickController
+public class AstarMoveClickController : MonoBehaviour
 {
 
 
 
     private GameObject Character;
-    private Text TextBox_Speed;
+    
+    private Text[] texts;
 
     private Stack<WayCell> way = new Stack<WayCell>();
 
@@ -115,18 +116,21 @@ public class AstarMoveClickController
 
 
 
-    public AstarMoveClickController(GameObject character, float speed, Text textBoard, bool diagonalAdjacent = true, bool Is2D = true,bool isEditableSpeed=true)
+    public AstarMoveClickController(GameObject character, float speed,Canvas toPrint, bool diagonalAdjacent = true, bool Is2D = true,bool isEditableSpeed=true)
     {
         Character = character;
         this.speed = speed;
-        TextBox_Speed = textBoard;
+        //TextBox_Speed = Text.Instantiate<Text>(TextBox_Example);
+       // GameObject.Find("Canvas").GetComponent<Text>().text = "asd";
+
+
         this.diagonalAdjacent = diagonalAdjacent;
         this.Is2D = Is2D;
         downToUp_epsilon = Character.transform.localScale.x;
         detalisation = Character.transform.localScale.x;
         isEditable = isEditableSpeed;
-        
-       
+
+        texts = toPrint.GetComponentsInChildren<Text>();
         
 
         
@@ -140,10 +144,19 @@ public class AstarMoveClickController
     {
         if (isEnable)
         {
-            TextBox_Speed.text = "Current speed: " + speed.ToString();
+            foreach (Text textBox in texts)
+            {
+                if (string.IsNullOrEmpty(textBox.text) || textBox.text.StartsWith("Speed"))
+                {
+                    textBox.text = "Speed: " + Speed;
+                    break;
+                }
+            }
             if (isEditable)
             {
+                
                 Check.ValueChange(ref speed, KeyCode.Z, KeyCode.X, 1f);
+
             }
             FinalSpeed = GetFinalSpeed(in speed);
             #region MouseClickWait

@@ -6,8 +6,13 @@ public class FollowPlayer : MonoBehaviour
 {
     public GameObject Player;
 
-    private Stack<WayCell> Way;
+    
+    void Start()
+    {
 
+
+
+    }
     void Update()
     {
 
