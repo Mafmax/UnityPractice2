@@ -1,9 +1,13 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public static class Check
 {
+   
+
+
+
+
     public static void ValueChange(ref float value, KeyCode keyUp, KeyCode keyDown, float step)
     {
 

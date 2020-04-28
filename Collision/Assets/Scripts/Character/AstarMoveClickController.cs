@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class AstarMoveClickController : MonoBehaviour
+public class AstarMoveClickController 
 {
 
 
@@ -144,14 +144,14 @@ public class AstarMoveClickController : MonoBehaviour
     {
         if (isEnable)
         {
-            foreach (Text textBox in texts)
+            /*foreach (Text textBox in texts)
             {
                 if (string.IsNullOrEmpty(textBox.text) || textBox.text.StartsWith("Speed"))
                 {
                     textBox.text = "Speed: " + Speed;
                     break;
                 }
-            }
+            }*/
             if (isEditable)
             {
                 
@@ -159,46 +159,8 @@ public class AstarMoveClickController : MonoBehaviour
 
             }
             FinalSpeed = GetFinalSpeed(in speed);
-            #region MouseClickWait
-            if (Input.GetMouseButtonDown(0))
-            {
-                CorrectMouseDown = Mouse.CheckCorrectButton(ref DownClickMousePosition, Character.transform.position, Character.transform.localScale.x, false);
-                Debug.Log(CorrectMouseDown);
-            }
-            if (Input.GetMouseButtonUp(0))
-            {
-                CorrectMouseUp = Mouse.CheckCorrectButton(ref UpClickMousePosition, DownClickMousePosition, downToUp_epsilon, true);
-                Debug.Log(CorrectMouseUp);
-            }
-            if (conditions.Count > 0)
-            {
-                conditions.Clear();
-            }
-
-            conditions.Add(!isMove);
-            conditions.Add(CorrectMouseDown);
-            conditions.Add(CorrectMouseUp);
-            #endregion
-            
-            
-            if (Check.Conjunction(conditions))
-            {
-
-                Debug.Log("СЕЙЧАС НАДО ЕХАТЬ");
-                way = PathFinderAstar.GetPath(Character.transform.position, UpClickMousePosition, Character.transform.localScale.x, Character.transform.localScale.x, diagonalAdjacent);
-                
-                Debug.Log("Детализация: " + Character.transform.localScale.magnitude);
-                currentTarget = Character.transform.position;
-                IsMove = true;
-                Mouse.ResetCorrect(out correctMouseUp, out correctMouseDown);
-            }
 
 
-
-
-
-            if (isMove)
-            {
                 if (Move.ApproximatelyEquals(Character.transform.position, currentTarget, Time.deltaTime * FinalSpeed))
                 {
                     Character.transform.position = currentTarget;
@@ -223,7 +185,7 @@ public class AstarMoveClickController : MonoBehaviour
                     Character.transform.position += DeltaMove;
                 }
 
-            }
+
 
         }
 
@@ -235,7 +197,12 @@ public class AstarMoveClickController : MonoBehaviour
 
 
 
-
+    public void UpdateTarget(Vector3 position)
+    {
+        way= PathFinderAstar.GetPath(Character.transform.position, position, Character.transform.localScale.x, Character.transform.localScale.x, diagonalAdjacent);
+        currentTarget = Character.transform.position;
+        IsMove = true;
+    }
 
     private float GetFinalSpeed(in float customSpeed)
     {
