@@ -75,7 +75,7 @@ public class WayCell : Cell
                     }
 
                     var justWaiting = waiting.Where(x => x.X == endX).Where(y => y.Y == endY).ToList();
-                    Debug.Log("Количество kustWaiting: " + justWaiting.Count);
+
 
                     if (s % 2 == 0 && diagonalAdjacent)
                     {

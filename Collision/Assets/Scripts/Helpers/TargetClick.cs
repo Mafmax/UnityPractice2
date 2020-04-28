@@ -38,6 +38,7 @@ public class TargetClick
 
         if (Input.GetMouseButtonDown(0))
         {
+
             CorrectMouseDown = Mouse.CheckCorrectButton(ref DownClickMousePosition, Character.transform.position, Character.transform.localScale.x, false);
             Debug.Log(CorrectMouseDown);
         }

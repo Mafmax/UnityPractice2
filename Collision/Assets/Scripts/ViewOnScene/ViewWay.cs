@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class ViewWay : MonoBehaviour
 {
@@ -14,11 +15,30 @@ public class ViewWay : MonoBehaviour
     private static readonly bool diagonalAdjacent = true;
     private Vector3 GizmosDrawClick=new Vector3(0f,0f,0f);
     private float timer = 0;
+
+
+    private int layer=8;
     // Start is called before the first frame update
     void Start()
     {
+        /*var maps = GameObject.Find("Grid").GetComponentsInChildren<Tilemap>();
+        TilemapCollider2D collider = new TilemapCollider2D();
+        Tilemap sameMap = new Tilemap();
+        foreach (Tilemap map in maps)
+        {
+            if (map.gameObject.layer == layer)
+            {
 
-
+                sameMap=map;
+                collider = map.GetComponent<TilemapCollider2D>();
+                map.GetComponent<TilemapCollider2D>().usedByComposite = true;
+                collider.usedByComposite = true;
+                break;
+            }
+        }
+        Debug.Log("UsedByComposite 1: " + sameMap.GetComponent<TilemapCollider2D>().usedByComposite);
+        Debug.Log("UsedByComposite 2: " + collider.usedByComposite);
+        */
     }
 
     // Update is called once per frame

@@ -1,12 +1,43 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public static class Check
 {
    
 
 
+    public static void UsedByCompositeOff(int layer)
+    {
+        var maps = GameObject.Find("Grid").GetComponentsInChildren<Tilemap>();
+        TilemapCollider2D collider = new TilemapCollider2D();
+        foreach (Tilemap map in maps)
+        {
 
+            if (map.gameObject.layer == layer)
+            {
+                collider = map.GetComponent<TilemapCollider2D>();
+                collider.usedByComposite = false;
+                break;
+            }
+        }
+    }
+    public static void UsedByCompositeOn(int layer)
+    {
+        TilemapCollider2D collider;
+        var maps = GameObject.Find("Grid").GetComponentsInChildren<Tilemap>();
+        foreach (Tilemap map in maps)
+        {
+
+            if (map.gameObject.layer == layer)
+            {
+                collider = map.GetComponent<TilemapCollider2D>();
+                collider.usedByComposite = true;
+                break;
+            }
+        }
+
+    }
 
     public static void ValueChange(ref float value, KeyCode keyUp, KeyCode keyDown, float step)
     {

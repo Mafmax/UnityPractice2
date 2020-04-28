@@ -144,14 +144,14 @@ public class AstarMoveClickController
     {
         if (isEnable)
         {
-            /*foreach (Text textBox in texts)
+            foreach (Text textBox in texts)
             {
                 if (string.IsNullOrEmpty(textBox.text) || textBox.text.StartsWith("Speed"))
                 {
                     textBox.text = "Speed: " + Speed;
                     break;
                 }
-            }*/
+            }
             if (isEditable)
             {
                 
@@ -166,9 +166,9 @@ public class AstarMoveClickController
                     Character.transform.position = currentTarget;
                     if (way.Count > 0)
                     {
-                        Debug.Log("way.Count: " + way.Count);
+
                         currentTarget = Move.GetTarget(Character, way);
-                        Debug.Log("way.Count: " + way.Count);
+
                         DeltaMove = Move.GetAddicted(Character.transform.position, currentTarget, FinalSpeed, Is2D);
 
                     }

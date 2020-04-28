@@ -1,7 +1,9 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 using UnityEngine.UI;
 
 public class MoveOnClick : MonoBehaviour
@@ -34,6 +36,9 @@ public class MoveOnClick : MonoBehaviour
             Driver.UpdateTarget(TargetClick.Target);
         }
         Driver.Go();
+
+        
+        
         
     }
 
@@ -41,7 +46,6 @@ public class MoveOnClick : MonoBehaviour
     {
         if (Driver != null)
         {
-            Debug.LogError("РРРРРРРРРРР");
             if (Driver.Way.Count > 0)
             {
                 Gizmos.color = Color.red;

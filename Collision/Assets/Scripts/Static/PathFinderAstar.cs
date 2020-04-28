@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public static class PathFinderAstar
 {
@@ -21,14 +22,20 @@ public static class PathFinderAstar
     private static bool DiagonalAdjacent { get; set; }
 
 
-    private static WayCell GetAvailableTarget(Vector3 preferTarget)
+    private static WayCell GetAvailableTarget(Vector3 preferTarget) //Параметр предпочитаемая точка
     {
+        int layer = LayerMask.NameToLayer("Wall");
+        int layerMask = LayerMask.GetMask(LayerMask.LayerToName(layer));
 
-        if (Physics2D.OverlapCircle(preferTarget, CharacterRadius, LayerMask.GetMask("Wall")))
+        Check.UsedByCompositeOff(layer);
+
+
+        if (Physics2D.OverlapCircle(preferTarget, CharacterRadius, layerMask))
         {
+            Check.UsedByCompositeOn(layer);
             return null;
         }
-
+        Check.UsedByCompositeOn(layer);
         return new WayCell(new Cell(preferTarget, Detalisation), null, preferTarget, float.MaxValue);
     }
     private static float GetMaxDeviation(float detalisation, float findPower)
@@ -66,11 +73,7 @@ public static class PathFinderAstar
         Checked.Add(Start);
         Start.AddNewAdjacents(ref Waiting, diagonalAdjacent);
 
-        Debug.Log("Waitings: ");
-        foreach (var cell in Waiting)
-        {
-            Debug.Log("X: " + cell.X + " Y: " + cell.Y);
-        }
+
 
 
         while (Waiting.Count > 0)
@@ -169,12 +172,7 @@ public static class PathFinderAstar
 
         } while (sameCell != null);
 
-        Debug.Log("Сосчитался путь!!! Полученные значения: ");
-        foreach (WayCell cell in way)
-        {
 
-            Debug.Log("Point. X: " + cell.X + " Y: " + cell.Y);
-        }
 
         return way;
     }
