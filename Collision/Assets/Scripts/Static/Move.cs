@@ -2,12 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-enum DirCos
-{
-    X,
-    Y,
-    Z
-}
+
 
 public static class Move
 {

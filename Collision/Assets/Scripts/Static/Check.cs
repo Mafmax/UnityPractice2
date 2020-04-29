@@ -5,7 +5,18 @@ using UnityEngine.Tilemaps;
 public static class Check
 {
    
+    public static bool IsAvailableTarget(Vector3 position, float radius, int layer)
+    {
+        UsedByCompositeOff(layer);
 
+
+        var isAvaliable = !(Physics2D.OverlapCircle(position, radius, LayerMask.GetMask(LayerMask.LayerToName(layer))));
+
+
+        UsedByCompositeOn(layer);
+        return isAvaliable;
+
+    }
 
     public static void UsedByCompositeOff(int layer)
     {

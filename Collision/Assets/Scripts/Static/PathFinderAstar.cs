@@ -28,7 +28,7 @@ public static class PathFinderAstar
         int layerMask = LayerMask.GetMask(LayerMask.LayerToName(layer));
 
         Check.UsedByCompositeOff(layer);
-
+        
 
         if (Physics2D.OverlapCircle(preferTarget, CharacterRadius, layerMask))
         {

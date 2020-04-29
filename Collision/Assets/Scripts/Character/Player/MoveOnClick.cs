@@ -10,7 +10,7 @@ public class MoveOnClick : MonoBehaviour
 {
     
     public Canvas canvas;
-    private AstarMoveClickController Driver;
+    private AstarMoveController Driver;
     private float speed = 50f;
     private Text speedText;
     private float GizmosRadius;
@@ -20,7 +20,7 @@ public class MoveOnClick : MonoBehaviour
     void Start()
     {
         GizmosRadius =this.gameObject.transform.localScale.x / 2f;
-        Driver = new AstarMoveClickController(this.gameObject, speed, FindObjectOfType<Canvas>());
+        Driver = new AstarMoveController(this.gameObject, speed, FindObjectOfType<Canvas>());
         Debug.Log(Driver.IsEnable);
         Driver.Enable();
         Debug.Log(Driver.IsEnable);

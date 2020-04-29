@@ -31,7 +31,7 @@ public class Potion_Drink : MonoBehaviour
             Debug.Log("Схавал поушен" + collider.name);
             animator.SetBool("isPoisoned", true);
             timer = 0;
-            GameObject.Find(("Potion spawn "+collider.name).Replace(" potion","")).GetComponent<PotionCreator>().ContainsPotion=false;
+            GameObject.Find(("Potion spawn " + collider.name).Replace(" potion","")).GetComponent<PotionCreator>().ContainsPotion=false;
             Destroy(GameObject.Find(collider.name));
         }
     }

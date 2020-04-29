@@ -63,10 +63,10 @@ public class CameraFollow : MonoBehaviour
         #endregion
 
         
-        /*if (Input.GetKey(KeyCode.Q) || GameObject.Find(Player.name).GetComponent<AstarMoveClickController>().IsMove )
+        if (true || Input.GetKey(KeyCode.Q))
         {
             this.Start();
-        }*/
+        }
     }
 
 
