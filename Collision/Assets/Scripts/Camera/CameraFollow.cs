@@ -23,12 +23,6 @@ public class CameraFollow : MonoBehaviour
 
     private float  CameraAcceleration { get; set; }
 
-    enum DirCos
-    {
-        X,
-        Y,
-        Z
-    }
 
     // Start is called before the first frame update
     void Start()

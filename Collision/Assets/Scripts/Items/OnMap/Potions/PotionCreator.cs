@@ -6,11 +6,7 @@ using UnityEngine;
 
 
 
-enum Chance
-{
-    Bad=14,
-    Good=5
-}
+
 
 public class PotionCreator : MonoBehaviour
 {
