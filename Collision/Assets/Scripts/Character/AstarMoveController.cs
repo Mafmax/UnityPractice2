@@ -13,6 +13,7 @@ public class AstarMoveController
 
     private Stack<WayCell> way = new Stack<WayCell>();
 
+
     public Stack<WayCell> Way
     {
         get
@@ -155,7 +156,7 @@ public class AstarMoveController
             if (isEditable)
             {
                 
-                Check.ValueChange(ref speed, KeyCode.Z, KeyCode.X, 1f);
+                Check.ValueChange(ref speed, GameOptions.Button.SpeedUp, GameOptions.Button.SpeedDown, 1f);
 
             }
             FinalSpeed = GetFinalSpeed(in speed);

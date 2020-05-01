@@ -16,7 +16,7 @@ public static class ObjectCreator
                 
                 break;
             }
-            var randomPoint = Helper.RandomScreenPoint;
+            var randomPoint = Helper.RandomScreenPoint();
             foreach (var name in unavailableLayerNames)
             {
                  success = Check.IsAvailableTarget(randomPoint, toCreate.transform.localScale.x, LayerMask.NameToLayer(name));
@@ -31,5 +31,38 @@ public static class ObjectCreator
 
         }
         
+    }
+    public static void CreateOutOfRandomScreenPoint(GameObject toCreate,float additive, string availableLayerName, params string[] unavailableLayerNames)
+    {
+        float counter = 0;
+        bool success = false;
+        while (true)
+        {
+            if (success || MyTimer.Wait(1f, ref counter))
+            {
+
+                break;
+            }
+            var randomPoint = Helper.RandomOutScreenPoint(additive);
+            foreach (var name in unavailableLayerNames)
+            {
+                success = Check.IsAvailableTarget(randomPoint, toCreate.transform.localScale.x, LayerMask.NameToLayer(name));
+                
+                if (success)
+                {
+                    success = !Check.IsAvailableTarget(randomPoint, 1f, LayerMask.NameToLayer(availableLayerName));
+                    if (success)
+                    {
+                        GameObject.Instantiate(toCreate, randomPoint, toCreate.transform.localRotation);
+                        break;
+                    }
+                }
+
+            }
+
+
+
+        }
+
     }
 }
